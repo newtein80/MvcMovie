@@ -36,6 +36,8 @@ namespace MvcMovie
             });
 
             // Add framework services.
+            // ASP.NET Core Configuration 시스템이 ConnectionString을 읽어오는데, 로컬 개발에서는 appsettings.json 파일에서 연결 문자열을 가져옵니다
+            // https://docs.microsoft.com/ko-kr/aspnet/core/fundamentals/configuration/index?view=aspnetcore-2.1
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

@@ -12,8 +12,16 @@ namespace MvcMovie.Controllers
 {
     public class MoviesController : Controller
     {
+        //컨트롤러의 생성자에서는 의존성 주입(Dependency Injection)을 이용해서 테이터베이스 컨텍스트를 컨트롤러에 주입하고 있습니다. 데이터베이스 컨텍스트는 컨트롤러의 각 CRUD 메서드들에서 사용
+        /// <summary>
+        /// 의존성 주입(Dependency Injection)을 이용해서 테이터베이스 컨텍스트를 컨트롤러에 주입
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// MoviesController 컨트롤러의 생성자
+        /// </summary>
+        /// <param name="context"></param>
         public MoviesController(ApplicationDbContext context)
         {
             _context = context;
@@ -66,6 +74,14 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies/Details/5
+        /// <summary>
+        /// localhost:1234/movies/details/1이라는 URL을 요청할 경우:
+        /// 컨트롤러에는 Movies 컨트롤러가(첫 번째 URL 세그먼트)
+        /// 액션 메서드로는 details 메서드가(두 번째 URL 세그먼트)
+        /// id 매개변수에는 1이 설정됩니다(마지막 URL 세그먼트).
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns>Movie 모델의 인스턴스가 Details 뷰로 전달</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -80,6 +96,7 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
+            //Movie 모델의 인스턴스가 Details 뷰로 전달
             return View(movie);
         }
 
