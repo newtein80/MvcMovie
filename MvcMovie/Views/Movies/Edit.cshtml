@@ -1,4 +1,7 @@
-﻿@model MvcMovie.Models.Movie
+﻿@* Visual Studio의 스캐폴딩 시스템은 Edit 뷰를 생성할 때, Movie 클래스를 분석해서 클래스에 존재하는 각 속성들에 대한 <label> 요소와 <input> 요소를 렌더하는 코드를 생성합니다. *@
+@* 뷰 템플릿의 모델로 Movie 형식 *@
+
+@model MvcMovie.Models.Movie
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,6 +13,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @* action 어트리뷰트가 /Movies/Edit/id URL로 전송되도록 구성된 HTML <form> 요소의 내부에, 각 속성들에 대한 <input> 요소들이 생성되어 있는 것을 확인할 수 있습니다. *@
+        @* Form 태그 헬퍼에 의해서 생성된 숨겨진 XSRF 토큰을 생성 *@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
@@ -32,6 +37,11 @@
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />

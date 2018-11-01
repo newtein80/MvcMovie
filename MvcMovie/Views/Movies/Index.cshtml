@@ -11,21 +11,19 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+@* 독특한 폰트는 해당 태그가 태그 헬퍼(Tag Helpers)에 의해서 지원되고 있음을 나타내줍니다. *@
 <form asp-controller="Movies" asp-action="Index" method="get">
 
     <p>
         <select asp-for="movieGenre" asp-items="Model.genres">
 
             <option value="">All</option>
-
         </select>
 
         Title: <input type="text" name="SearchString">
 
         <input type="submit" value="Filter" />
-
     </p>
-
 </form>
 
 <table class="table">
@@ -42,6 +40,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.movies[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.movies[0].Rating)
             </th>
             <th></th>
         </tr>
@@ -61,6 +62,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
                 </td>
                 <td>
                     @* 이 페이지의 Edit 링크, Details 링크, Delete 링크는 Views/Movies/Index.cshtml 파일에서 MVC Core Anchor 태그 헬퍼(MVC Core Anchor Tag Helper)를 사용하여 만들어집니다. *@
