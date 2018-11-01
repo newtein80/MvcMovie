@@ -18,6 +18,7 @@ namespace MvcMovie.Models
                 // Look for any movies.
                 if (context.Movie.Any())
                 {
+                    // 데이터베이스에 이미 데이터가 존재할 경우, 시드 이니셜라이저가 그대로 반환되어 종료
                     return;   // DB has been seeded
                 }
 

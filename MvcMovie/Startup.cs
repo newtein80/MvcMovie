@@ -102,6 +102,9 @@ namespace MvcMovie
              * */
             app.UseMvc(routes =>
             {
+                //라우팅의 형식
+                // ex. http://localhost:1234/Movies/Edit/4라는 URL을 매개변수 ID 값이 4로 설정된, Movies 컨트롤러의 Edit 액션 메서드에 대한 요청으로 해석
+                //컨트롤러의 메서드를 액션 메서드라고 합니다.
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

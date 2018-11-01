@@ -89,6 +89,7 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
+            // Entity Framework의 FirstOrDefaultAsync 메서드로 정보를 조회, 조회한 영화 정보를 Edit 뷰에 전달
             var movie = await _context.Movie
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (movie == null)
@@ -109,6 +110,15 @@ namespace MvcMovie.Controllers
         // POST: Movies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // [Bind] 어트리뷰트
+        // 오버포스팅(Over-Posting) 공격을 방지할 수 있는 한 가지 방법입니다.
+        // 반드시 [Bind] 어트리뷰트에는 변경을 허용하려는 속성들만 포함시켜야 합니다.
+        // [HttpPost] 어트리뷰트
+        // 메서드가 오직 POST 요청에 의해서만 호출되도록 지정 ([HttpGet] 어트리뷰트는 기본값)
+        // [ValidateAntiForgeryToken] 어트리뷰트
+        // Edit 뷰 파일에서(Views/Movies/Edit.cshtml) 생성되는 위조 방지 토큰(Anti-Forgery Token)과 한 쌍으로 크로스 사이트 요청 위조(Cross-Site Request Forgery)를 방지하기 위한 용도
+        // 위조 방지 토큰은 Edit 뷰 파일에서 Form 태그 헬퍼(Form Tag Helper)에 의해서 생성
+        // Form 태그 헬퍼는 숨겨진 위조 방지 토큰을 생성하는데, 반드시 그 값과 Movies 컨트롤러의 Edit 메서드에 지정된 [ValidateAntiForgeryToken] 어트리뷰트가 생성하는 위조 방지 토큰이 일치해야만 합니다. 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,ReleaseDate,Genre,Price")] Movie movie)

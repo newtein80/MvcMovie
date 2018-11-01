@@ -63,6 +63,9 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
+                    @* 이 페이지의 Edit 링크, Details 링크, Delete 링크는 Views/Movies/Index.cshtml 파일에서 MVC Core Anchor 태그 헬퍼(MVC Core Anchor Tag Helper)를 사용하여 만들어집니다. *@
+                    @* 태그 헬퍼(Tag Helpers)를 이용하면 Razor 파일에서 서버 측 코드로 HTML 요소의 생성 및 렌더링을 처리할 수 있습니다. *@
+                    @* AnchorTagHelper가 컨트롤러의 액션 메서드와 라우트 id로부터 HTML href 어트리뷰트의 값을 동적으로 생성 *@
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
