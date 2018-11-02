@@ -103,6 +103,8 @@ namespace MvcMovie.Controllers
             }
 
             // Entity Framework의 FirstOrDefaultAsync 메서드로 정보를 조회, 조회한 영화 정보를 Edit 뷰에 전달
+            // Code First를 사용하면 SingleOrDefaultAsync 메서드를 통해서 손쉽게 데이터를 검색할 수 있습니다.
+            // Details 메서드에 보안과 관련해서 구현된 주목할 만한 특징 한 가지는, 영화 정보를 이용해서 무언가 작업을 수행하기 전에 항상 먼저 검색 메서드의 결과가 존재하는지부터 확인한다는 점
             var movie = await _context.Movie
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (movie == null)
@@ -222,13 +224,14 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Movies/Delete/5
+        // HTTP GET Delete 메서드는 지정된 영화 정보를 삭제하는 것이 아니라, 단지 삭제 작업(HttpPost)을 승인할 수 있는 영화 정보 뷰를 반환할 뿐이라는 점에 주의하시기 바랍니다. 
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            
             var movie = await _context.Movie
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (movie == null)
@@ -240,6 +243,33 @@ namespace MvcMovie.Controllers
         }
 
         // POST: Movies/Delete/5
+        // 공통 언어 런타임(CLR, Common Language Runtime)에서 오버로드 된 메서드의 시그니처는 유일해야합니다
+        // (즉, 메서드의 이름이 같을 수는 있지만 매개변수들의 목록은 달라야 합니다).
+        // 그러나 현재 상황은 두 가지 Delete 메서드(GET 버전과 POST 버전)가 모두 필요한 경우임에 반해, 공교롭게도 두 메서드의 매개변수 시그니처가 동일합니다.
+        // (즉, 두 메서드 모두 하나의 정수형 매개변수를 받습니다.)
+        /*
+        이 문제점을 해결할 수 있는 방법은 두 가지가 있습니다.
+        1. 첫 번째 방법은
+        두 메서드의 이름을 서로 다르게 지정하는 것입니다. 본문의 예제에서 스캐폴딩 메커니즘 역시 이 방식을 따르고 있음을 확인할 수 있습니다.
+        그러나 여전히 사소한 문제점이 존재하는데, ASP.NET이 URL의 세그먼트들을 액션 메서드와 매핑할 때 메서드의 이름을 기준으로 처리하기 때문에,
+        지금처럼 메서드 이름을 변경해버리면 라우팅이 적절한 액션 메서드를 찾을 수 없게 됩니다.
+        이 문제의 해결방법은 예제 코드에서 볼 수 있는 것처럼 DeleteConfirmed 메서드에 ActionName("Delete") 어트리뷰트를 지정하는 것입니다.
+        이 어트리뷰트를 적용하면 /Delete/ 세그먼트가 포함된 URL에 대한 POST 요청을 라우팅 시스템을 통해서 DeleteConfirmed 메서드로 원활하게 매핑할 수 있습니다.
+        2. 동일한 이름과 시그니처를 갖고 있는 메서드의 문제점을 해결할 수 있는 또 다른 일반적인 방법은
+        아예 POST 메서드의 시그니처에 인위적으로 사용하지 않는 추가적인 매개변수를 추가하는 것입니다.
+        검색 기능 추가하기 파트에서 notUsed 매개변수를 추가했던 이유가 바로 이 때문으로, [HttpPost] Delete 메서드도 동일한 방식으로 처리할 수 있습니다:
+         * 
+         * */
+        /*
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, bool notUsed)
+        {
+            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.ID == id);
+            _context.Movie.Remove(movie);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        */
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -249,6 +279,8 @@ namespace MvcMovie.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        
 
         private bool MovieExists(int id)
         {
