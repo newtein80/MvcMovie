@@ -99,6 +99,10 @@ namespace MvcMovie
              *         이 작업을 수행하면 데이터베이스에 Movie 테이블을 추가하는 (또는 드랍하는) 마이그레이션 명령이 구현된 Data/Migrations/2016<date-time>_Initial.cs 파일이 생성
              * dotnet ef database update : 
              *         명령은 방금 생성한 마이그레이션을 이용해서 데이터베이스를 갱신
+             *         
+             * dotnet tool install --global dotnet-aspnet-codegenerator <-- code generator 사용
+             * dotnet aspnet-codegenerator identity -dc 프로젝트명.Data.ApplicationDbContext --files "Account.Register;Account.Login;Account.Logout"
+             * https://docs.microsoft.com/ko-kr/aspnet/core/security/authentication/identity?view=aspnetcore-2.1&tabs=netcore-cli
              * */
             app.UseMvc(routes =>
             {
