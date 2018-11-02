@@ -41,8 +41,46 @@ namespace MvcMovie
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            // 이 과정을 거치고 나면 의존성 주입을 통해서 응용 프로그램 내에서 이 서비스를 사용할 수 있습니다.
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Startup 클래스의 Configure메서드에서 UseIdentity 메서드를 호출하면 응용 프로그램에서 Identity가 활성화됩니다.
+            // 다음에 추가된 코드는 요청 파이프라인에 쿠키 기반 인증을 추가
+            services.Configure<IdentityOptions>(options =>
+            {
+                // 보다 자세한 Identity 구성 방법은 Configure Identity 문서를 참고하시기 바랍니다.
+                // https://docs.microsoft.com/ko-kr/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-2.1
+                // Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // 기본 키의 데이터 형식도 구성 가능합니다. Configure Identity primary keys data type 문서를 참고하시기 바랍니다.
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -65,6 +103,7 @@ namespace MvcMovie
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            // 호출 하 여 id를 활성화 UseAuthentication합니다. UseAuthentication은 요청 파이프라인에 인증 미들웨어를 추가합니다.
             app.UseAuthentication();
 
             //MVC에 의해서 사용되는 기본 URL 라우팅 로직은 호출할 코드를 결정하기 위해서 다음과 같은 세그먼트 형식을 사용
